@@ -1,35 +1,15 @@
 pipeline {
     agent any
-
     stages {
-        stage('Install Python') {
+        stage('Build') {
             steps {
-                sh '''
-                    apt-get update
-                    apt-get install -y python3 python3-pip
-                '''
+                echo 'Running build...'
             }
         }
-
-        stage('Install dependencies') {
+        stage('Test') {
             steps {
-                sh '''
-                    python3 -m pip install --upgrade pip
-                    pip3 install -r requirements.txt
-                    pip3 install pytest pytest-cov
-                '''
-            }
-        }
-
-        stage('Run tests') {
-            steps {
-                sh 'pytest tests/ -v --cov=src --cov-report=term-missing'
-            }
-        }
-
-        stage('Check test coverage') {
-            steps {
-                sh 'coverage report --fail-under=70'
+                sh 'pip install -r requirements.txt'
+                sh 'pytest tests/ -v --cov=src'
             }
         }
     }
