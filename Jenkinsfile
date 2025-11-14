@@ -1,20 +1,30 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.12'
+        }
+    }
+
     stages {
-        stage('Clone') {
+        stage('Install dependencies') {
             steps {
-                echo 'Repo cloned by Jenkins automatically'
+                sh '''
+                    python -m pip install --upgrade pip
+                    pip install -r requirements.txt
+                    pip install pytest pytest-cov
+                '''
             }
         }
-        stage('Build') {
+
+        stage('Run tests') {
             steps {
-                echo 'Running build steps...'
+                sh 'pytest tests/ -v --cov=src --cov-report=term-missing'
             }
         }
-        stage('Test') {
+
+        stage('Check test coverage') {
             steps {
-                echo 'Running tests...'
-                sh 'pytest tests/ -v --cov=src'
+                sh 'coverage report --fail-under=70'
             }
         }
     }
