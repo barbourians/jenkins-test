@@ -8,8 +8,11 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'pip install -r requirements.txt'
-                sh 'pytest tests/ -v --cov=src'
+                sh '''
+                    python3 -m pip install --upgrade pip
+                    python3 -m pip install -r requirements.txt 
+                    pytest tests/ -v --cov=src
+                '''
             }
         }
     }
