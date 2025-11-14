@@ -21,6 +21,9 @@ pipeline {
 
                     # Run tests with coverage
                     pytest tests/ -v --cov=src
+                    
+                    # Fail build if coverage is too low
+                    coverage report --fail-under=70
                 '''
             }
         }
