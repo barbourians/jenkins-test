@@ -9,7 +9,17 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                    python3 -m pip install -r requirements.txt 
+                    # Create a virtual environment in the workspace
+                    python3 -m venv .venv
+
+                    # Activate it
+                    . .venv/bin/activate
+
+                    # Install dependencies into the venv
+                    python -m pip install --upgrade pip
+                    pip install -r requirements.txt 
+
+                    # Run tests with coverage
                     pytest tests/ -v --cov=src
                 '''
             }
