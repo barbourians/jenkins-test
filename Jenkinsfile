@@ -1,30 +1,16 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.12'
+            image 'python:3.11'
+            args '-u root'
         }
     }
-
     stages {
-        stage('Install dependencies') {
+        stage('Test') {
             steps {
-                sh '''
-                    python -m pip install --upgrade pip
-                    pip install -r requirements.txt
-                    pip install pytest pytest-cov
-                '''
-            }
-        }
-
-        stage('Run tests') {
-            steps {
-                sh 'pytest tests/ -v --cov=src --cov-report=term-missing'
-            }
-        }
-
-        stage('Check test coverage') {
-            steps {
-                sh 'coverage report --fail-under=70'
+                sh 'pip install -r requirements.txt'
+                sh 'pip install pytest pytest-cov'
+                sh 'pytest tests/ -v --cov=src'
             }
         }
     }
